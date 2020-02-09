@@ -3,7 +3,7 @@
     <el-header>
       <h3 style="margin: 0px; align-items: center; display: flex; font-size:20pt; color: #409EFF;"><i class="icon-logo-128px"></i>MyBlog</h3>
       <el-menu mode="horizontal" class="nav-head" :router="true">
-        <el-input placeholder="请输入内容" prefix-icon="el-icon-search" size="small" class="nav-head-input" v-model="input" clearable></el-input>
+        <el-input placeholder="请输入内容" prefix-icon="el-icon-search" size="small" class="nav-head-input" v-model="input" clearable @input="search()"></el-input>
         <el-menu-item index="/index">首页</el-menu-item>
         <el-menu-item index="/category" >博客</el-menu-item>
         <el-menu-item index="/about">关于</el-menu-item>
@@ -70,6 +70,15 @@ export default {
         ],
         Copyright: 'Copyright © 2020-2020 www.frankfang.me All Rights Reserved. 备案号：皖ICP备15012807号-1'
       }
+    }
+  },
+  created () {},
+  methods: {
+    search () {
+      if (this.input !== '') {
+        return this.$router.push('/search/' + this.input)
+      }
+      this.$router.push('/category')
     }
   }
 }

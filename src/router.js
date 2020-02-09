@@ -31,7 +31,7 @@ const router = new Router({
       children: [
         { path: '/index', component: Index, meta: { requireLogin: false } },
         { path: '/article/:id', component: Posts, meta: { requireLogin: false } },
-        { path: '/search', component: Search, meta: { requireLogin: false } },
+        { path: '/search/:key', component: Search, meta: { requireLogin: false } },
         { path: '/category', component: Category, meta: { requireLogin: false } },
         { path: '/tag/:id', component: Tag, meta: { requireLogin: false } },
         { path: '/about', component: About, meta: { requireLogin: false } },

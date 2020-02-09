@@ -1,46 +1,89 @@
 <template>
   <div class="container">
     <el-row :gutter="10">
+      <!-- 左侧导航栏 -->
       <el-col :span="5">
-        <el-card class="card-nav-left" body-style="padding: 0px;" shadow="never">
-          <div slot="header" body-style="padding: 0px;">
-            <span>快速访问</span>
-            <el-button style="float: right; padding: 3px 0" type="text">展开</el-button>
-          </div>
+        <el-card shadow="never" body-style="padding: 0px">
           <el-menu class="nav-left" :router="true">
-            <el-submenu :index="item.id + '' " v-for="item in menuList" :key="item.id">
+            <template>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin: 10px;">
+                <div style="align-items: center; display: flex;">
+                  <i class="icon-write-24px"></i>
+                  <h4 style="margin: 5px;">博客随笔</h4>
+                </div>
+                <el-button icon="el-icon-view" type="text">查看</el-button>
+              </div>
+            </template>
+            <el-submenu :index="category.id + '' " v-for="category in menuList" :key="category.id">
               <template slot="title">
-                <span>{{ item.name }}</span>
+                <i class="icon-category2-24px" style="margin-right: 5px;"></i>
+                <span>{{ category.name }}</span>
               </template>
-              <el-menu-item :index="subItem.id + ''" v-for="subItem in item.tags" :key="subItem.id">
-                <template>
-                  <span>{{ subItem.name }}</span>
+              <el-menu-item :index=" '/tag/' + tag.id " v-for="tag in category.tags" :key="tag.id">
+                <template slot="title">
+                  <i class="icon-tag-24px" style="margin-right: 5px;"></i>
+                  <span>{{ tag.name }}</span>
                 </template>
               </el-menu-item>
             </el-submenu>
           </el-menu>
         </el-card>
       </el-col>
-      <el-col :span="14">
-        <el-card v-for="item in articleList" :key="item.id" shadow="hover" class="ArticleCard">
-          <h2>{{ item.title }}</h2>
-          <p>简介：</p>
-          <p>{{ item.introduction }}</p>
-          <el-row>
-            <el-col :span="21">
-              <el-tag v-for="tagItem in item.tags" :key="tagItem.id" style="margin: 5px;">
-                {{ tagItem.name }}
-              </el-tag>
-            </el-col>
-            <el-col :span="3">
-              <el-button icon="el-icon-view" type="primary" size="small" style="justify-content: flex-end;" @click="viewArticle(item.id)">查看</el-button>
-            </el-col>
-          </el-row>
+      <el-col :span="14" shadow="never">
+        <el-card>
+          <div style="display: flex; align-items: center;">
+            <el-input type="text"></el-input>
+            <el-button type="primary">筛选</el-button>
+          </div>
+          <!-- 文章列表 -->
+          <el-card v-for="(article, index) in articleList" :key="article.id" shadow="hover" class="ArticleCard">
+            <div style="display: flex; align-items: center; justify-content: flex-start;">
+              <i :class="iconClassList.article[index%5]"></i>
+              <div style="margin-left: 8px;">
+                <h3 style="margin-bottom: 10px;">{{ article.title }}</h3>
+                <p style="color: grey; font-size: small; margin-top: 0px;">简介：{{ article.introduction }}</p>
+              </div>
+            </div>
+            <div style="align-items: center; display: flex; justify-content: space-between;">
+              <div style="align-items: center; display: flex;">
+                <div style="align-items: center; display: flex;">
+                  <i class="icon-category2-24px"></i>
+                  <h5 style="margin-left: 5px; margin-right: 5px;">{{ article.category.name }}</h5>
+                </div>
+                <el-tag v-for="(tag, index) in article.tags" :key="tag.id"
+                :type="tagTypes[index%5]" style="margin: 5px;" effect="light">
+                  {{ tag.name }}
+                </el-tag>
+              </div>
+              <el-button icon="el-icon-view"
+              type="primary"
+              size="small"
+              round
+              style="justify-content: flex-end;"
+              @click="viewArticle(article.id)">查看</el-button>
+            </div>
+          </el-card>
         </el-card>
       </el-col>
       <el-col :span="5">
-        <el-card class="card-nav-right" shadow="never">
-          <h3>模块正在开发中……</h3>
+        <el-card shadow="never" body-style="padding: 0px;">
+          <el-menu>
+            <template>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin: 10px;">
+                <div style="align-items: center; display: flex;">
+                  <i class="icon-link-24px"></i>
+                  <h4 style="margin: 5px;">快速导航</h4>
+                </div>
+                <el-button type="text">更多 >></el-button>
+              </div>
+            </template>
+            <el-menu-item :index="item.id + ''" v-for="item in fastLinkList" :key="item.id">
+              <template slot="title">
+                <el-avatar size="small" :src="item.iconUrl" style="background-color: white; margin-right: 5px;"></el-avatar>
+                <el-link :underline="false" :href="item.linkUrl">{{ item.name }}</el-link>
+              </template>
+            </el-menu-item>
+          </el-menu>
         </el-card>
       </el-col>
     </el-row>
@@ -51,53 +94,44 @@
 export default {
   data () {
     return {
-      menuList: [
-        { id: '1', name: 'Web前端', tags: [{ id: '1-1', name: 'Vue.js' }, { id: '1-2', name: 'React.js' }] },
-        { id: '2', name: '服务器', tags: [{ id: '2-1', name: 'Spring Boot' }, { id: '2-2', name: 'Node.js' }] },
-        { id: '3', name: '编程语言', tags: [{ id: '3-1', name: 'C++' }, { id: '3-2', name: 'Java' }] },
-        { id: '4', name: '算法', tags: [{ id: '4-1', name: 'KMP' }, { id: '4-2', name: 'NP' }] }
-      ],
-      articleList: [
-        { id: '1',
-          title: '标题1',
-          introduction: '这是关于这篇文章的简介，内容不超过140字。这是关于这篇文章的简介，内容不超过140字。',
-          tags: [
-            { id: '1-1', name: '标签' },
-            { id: '1-2', name: '标签' },
-            { id: '1-3', name: '标签' }
-          ]
-        },
-        { id: '2',
-          title: '标题2',
-          introduction: '这是关于这篇文章的简介，内容不超过140字。这是关于这篇文章的简介，内容不超过140字。',
-          tags: [
-            { id: '1-1', name: '标签' },
-            { id: '1-2', name: '标签' },
-            { id: '1-3', name: '标签' }
-          ]
-        },
-        { id: '3',
-          title: '标题3',
-          introduction: '这是关于这篇文章的简介，内容不超过140字。这是关于这篇文章的简介，内容不超过140字。',
-          tags: [
-            { id: '1-1', name: '标签' },
-            { id: '1-2', name: '标签' },
-            { id: '1-3', name: '标签' }
-          ]
-        }
-      ]
+      menuList: [],
+      articleList: [],
+      // 快速导航链接
+      fastLinkList: [],
+      // 标签类型
+      tagTypes: ['success', 'primary', 'warning', 'danger', 'info'],
+      // 图标类名列表
+      iconClassList: {
+        article: ['icon-article-success-64px', 'icon-article-primary-64px', 'icon-article-warning-64px', 'icon-article-danger-64px', 'icon-article-info-64px']
+      }
     }
   },
   created () {
-    this.getNavMenu()
+    this.getArticleList()
+    this.getCategory()
+    this.getLinkList()
   },
   methods: {
-    async getNavMenu () {
-      const { data: result } = await this.$http.get('/menu')
-      if (result.data !== 200) {
+    async getArticleList () {
+      const { data: result } = await this.$http.post('/search', null, { params: { key: this.$route.params.key } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.articleList = result.data
+    },
+    async getCategory () {
+      const { data: result } = await this.$http.get('/category')
+      if (result.status !== 200) {
         return this.$message.error(result.message)
       }
       this.menuList = result.data
+    },
+    async getLinkList () {
+      const { data: result } = await this.$http.post('/link', null, { params: { visible: true } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.fastLinkList = result.data
     },
     async viewArticle (id) {
       this.$router.push('/article/' + id)
