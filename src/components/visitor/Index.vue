@@ -55,7 +55,18 @@
               <h3>模块正在开发中...</h3>
             </el-tab-pane>
             <el-tab-pane label="导航链接" name="third">
-              <h3>模块正在开发中...</h3>
+              <el-row :gutter="10">
+                <el-col :span="12" v-for="item in linkList" :key="item.id" style="margin-bottom: 10px;">
+                  <div class="link-card">
+                    <el-avatar :src="item.iconUrl" style="background-color: white;"></el-avatar>
+                    <div style="margin-left: 8px;">
+                      <h5 style="margin: 0px;">{{ item.name }}</h5>
+                      <el-link :href="item.linkUrl" :underline="false" style="margin: 0px;">{{ item.linkUrl }}</el-link>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="12" style="margin-bottom: 10px;"></el-col>
+              </el-row>
             </el-tab-pane>
           </el-tabs>
         </el-card>
@@ -125,17 +136,15 @@ export default {
       tabsActiveName: 'first',
       // 菜单列表
       menuList: [],
+      // 链接列表
+      linkList: [],
       // 用户信息
       userInfo: {
         name: 'Frank Fang',
         intro: '个性签名'
       },
       // 快速导航列表
-      fastLinkList: [
-        { id: '1', name: 'Github', linkUrl: 'http://www.github.com', iconUrl: 'https://www.github.com/favicon.ico' },
-        { id: '2', name: '码云', linkUrl: 'https://www.gitee.com', iconUrl: 'https://www.gitee.com/favicon.ico' },
-        { id: '3', name: '菜鸟教程', linkUrl: 'http://www.runoob.com', iconUrl: 'https://www.runoob.com/favicon.ico' }
-      ],
+      fastLinkList: [],
       // 动态列表
       dynamicList: [
         { id: '1', title: '文章标题', date: '2020-02-03', category: { id: '1', name: '服务器端' }, tags: [{ id: '1', name: 'spring' }, { id: '', name: 'spring boot' }] },
@@ -154,14 +163,33 @@ export default {
   },
   created () {
     this.getMenuList()
+    this.getLinkList()
+    this.getQuickLinkList()
   },
   methods: {
+    // 获取左侧菜单栏
     async getMenuList () {
       const { data: result } = await this.$http.get('/category')
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
       this.menuList = result.data
+    },
+    // 获取导航链接
+    async getLinkList () {
+      const { data: result } = await this.$http.get('/link')
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.linkList = result.data
+    },
+    // 获取右侧快速导航
+    async getQuickLinkList () {
+      const { data: result } = await this.$http.post('/link', null, { params: { visible: true } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.fastLinkList = result.data
     }
   }
 }
@@ -183,5 +211,13 @@ export default {
   background-color: #F2F6FC;
   border-radius: 10px;
   padding: 20px;
+}
+.link-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #F2F6FC;
+  border-radius: 8px;
+  padding: 10px;
 }
 </style>
