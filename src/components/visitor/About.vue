@@ -1,7 +1,5 @@
 <template>
-  <div class="container">
-    <h3>模块正在开发中</h3>
-  </div>
+  <h3>模块正在开发中</h3>
 </template>
 
 <script>
