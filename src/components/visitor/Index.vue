@@ -46,7 +46,7 @@
                       </el-tag>
                     </div>
                   </div>
-                  <el-button type="primary" round icon="el-icon-view" size="small">查看</el-button>
+                  <el-button type="primary" round icon="el-icon-view" size="small" @click="viewArticle(item.id)">查看</el-button>
                 </div>
               </el-card>
               <el-divider content-position="center"><p style="color: grey;">最多只显示10条内容</p></el-divider>
@@ -146,13 +146,7 @@ export default {
       // 快速导航列表
       fastLinkList: [],
       // 动态列表
-      dynamicList: [
-        { id: '1', title: '文章标题', date: '2020-02-03', category: { id: '1', name: '服务器端' }, tags: [{ id: '1', name: 'spring' }, { id: '', name: 'spring boot' }] },
-        { id: '2', title: '文章标题', date: '2020-02-03', category: { id: '1', name: '服务器端' }, tags: [{ id: '1', name: 'spring' }, { id: '', name: 'spring boot' }] },
-        { id: '3', title: '文章标题', date: '2020-02-03', category: { id: '1', name: '服务器端' }, tags: [{ id: '1', name: 'spring' }, { id: '', name: 'spring boot' }] },
-        { id: '4', title: '文章标题', date: '2020-02-03', category: { id: '1', name: '服务器端' }, tags: [{ id: '1', name: 'spring' }, { id: '', name: 'spring boot' }] },
-        { id: '5', title: '文章标题', date: '2020-02-03', category: { id: '1', name: '服务器端' }, tags: [{ id: '1', name: 'spring' }, { id: '', name: 'spring boot' }] }
-      ],
+      dynamicList: [],
       // 图标类名列表
       iconClassList: {
         article: ['icon-article-success-64px', 'icon-article-primary-64px', 'icon-article-warning-64px', 'icon-article-danger-64px', 'icon-article-info-64px']
@@ -163,6 +157,7 @@ export default {
   },
   created () {
     this.getMenuList()
+    this.getDynamicList()
     this.getLinkList()
     this.getQuickLinkList()
   },
@@ -174,6 +169,14 @@ export default {
         return this.$message.error(result.message)
       }
       this.menuList = result.data
+    },
+    // 获取动态列表
+    async getDynamicList () {
+      const { data: result } = await this.$http.get('/article/dynamic', { params: { size: 10 } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.dynamicList = result.data
     },
     // 获取导航链接
     async getLinkList () {
@@ -190,6 +193,10 @@ export default {
         return this.$message.error(result.message)
       }
       this.fastLinkList = result.data
+    },
+    // 查看文章
+    viewArticle (id) {
+      this.$router.push('/article/' + id)
     }
   }
 }
