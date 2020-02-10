@@ -21,8 +21,8 @@
       <!-- 搜索区 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="queryInfo.key">
+            <el-button slot="append" icon="el-icon-search" @click="searchArticle()"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -56,6 +56,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pageNum"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="queryInfo.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            background>
+          </el-pagination>
     </el-card>
   </div>
 </template>
@@ -64,6 +74,14 @@
 export default {
   data () {
     return {
+      // 获取文章列表的参数对象
+      queryInfo: {
+        key: '',
+        pageNum: '',
+        pageSize: ''
+      },
+      // 文章总数
+      total: '',
       // 控制确认删除弹出框的显示与隐藏
       isDeleteDialogVisible: false,
       // 要删除的文章id
@@ -78,13 +96,37 @@ export default {
     this.getArticleList()
   },
   methods: {
+    // 监听pageSize改变的事件
+    handleSizeChange (newSize) {
+      this.queryInfo.pageSize = newSize
+      this.getArticleList()
+    },
+    // 监听页码值改变的事件
+    handleCurrentChange (newPage) {
+      this.queryInfo.pageNum = newPage
+      this.getArticleList()
+    },
     // 获取文章列表
     async getArticleList () {
-      const { data: result } = await this.$http.get('/admin/article/list')
+      const { data: result } = await this.$http.post('/article/list', this.queryInfo)
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
-      this.articleList = result.data
+      this.articleList = result.data.list
+      this.queryInfo.pageNum = result.data.pageNum
+      this.queryInfo.pageSize = result.data.pageSize
+      this.total = result.data.total
+    },
+    // 搜索文章
+    async searchArticle () {
+      const { data: result } = await this.$http.post('/search/article', this.queryInfo)
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.articleList = result.data.list
+      this.queryInfo.pageNum = result.data.pageNum
+      this.queryInfo.pageSize = result.data.pageSize
+      this.total = result.data.total
     },
     // 添加文章
     addArticle () {

@@ -151,14 +151,12 @@ export default {
       },
       // 修改密码表单
       updatePasswordForm: {
-        id: '',
         old_pwd: '',
         new_pwd: '',
         code: ''
       },
       // 修改邮件表单
       updateEmailForm: {
-        id: '',
         email: '',
         verifyCode: ''
       },
@@ -190,11 +188,28 @@ export default {
       this.isDisabled.step3 = true
     },
     async getUserInfo () {
-      const { data: result } = await this.$http.get('/admin/info/' + window.sessionStorage.getItem('uid'))
+      const { data: result } = await this.$http.get('/admin/' + window.sessionStorage.getItem('uid'))
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
       this.userInfo = result.data
+    },
+    // 获取验证码
+    async getCode () {
+      const { data: result } = await this.$http.get('/verify/update', { params: { id: window.sessionStorage.getItem('uid') } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.$message.success(result.message)
+    },
+    async updatePassword () {
+      const { data: result } = await this.$http.put('/admin/' + window.sessionStorage.getItem('uid') + '/password', this.updatePasswordForm)
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.$message.success(result.message)
+      window.sessionStorage.clear()
+      this.$router.push('/login')
     },
     // 取消修改密码
     cancelUpdatePassword (refName) {
