@@ -62,7 +62,7 @@ export default {
     // 获取邮箱验证码
     async getVerificationCode () {
       if (this.loginRuleForm.username !== '') {
-        const { data: result } = await this.$http.post('/verify/login', null, { params: { username: this.loginRuleForm.username } })
+        const { data: result } = await this.$http.get('/verify/login', { params: { username: this.loginRuleForm.username } })
         if (result.status !== 200) {
           return this.$message.error(result.message)
         }

@@ -9,8 +9,8 @@
               <p>为了确保是本人操作，请点击下方的“获取验证码”按钮，服务器将向您的邮箱发送验证码。</p>
               <el-form-item label="验证码">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <el-input type="text"></el-input>
-                  <el-button type="primary" plain style="margin-left: 15px;">获取验证码</el-button>
+                  <el-input type="text" v-model="checkCode"></el-input>
+                  <el-button type="primary" plain style="margin-left: 15px;" @click="getCode()">获取验证码</el-button>
                 </div>
               </el-form-item>
             </el-form>
@@ -33,8 +33,8 @@
             <p>请点击下方的“获取验证码”按钮，服务器将向您的新邮箱发送验证码，请注意查收</p>
             <el-form-item label="验证码" prop="verifyCode">
               <div style="display: flex; align-items: center; justify-content: space-between;">
-                <el-input type="text" v-model="updateEmailForm.verifyCode"></el-input>
-                <el-button type="primary" plain style="margin-left: 15px;">获取验证码</el-button>
+                <el-input type="text" v-model="updateEmailForm.code"></el-input>
+                <el-button type="primary" plain style="margin-left: 15px;" @click="getActiveCode()">获取验证码</el-button>
               </div>
             </el-form-item>
           </el-form>
@@ -50,6 +50,10 @@
         </el-tab-pane>
         <el-tab-pane label="完成" name="third" :disabled="isDisabled.step3">
           <p>您已成功更改绑定邮箱</p>
+          <div style="display: flex; align-items: center; justify-content: flex-end; margin-top: 15px;">
+            <el-button round @click="isUpdateEmailDialogVisible = false">取消</el-button>
+            <el-button round type="primary" @click="isUpdateEmailDialogVisible = false">完成</el-button>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
@@ -137,6 +141,8 @@ export default {
       isUpdatePwdDialogVisible: false,
       // 控制修改邮件对话框的状态
       isUpdateEmailDialogVisible: false,
+      // 身份验证
+      checkCode: '',
       // 步骤是否可以执行
       isDisabled: {
         step1: false,
@@ -158,7 +164,7 @@ export default {
       // 修改邮件表单
       updateEmailForm: {
         email: '',
-        verifyCode: ''
+        code: ''
       },
       // 修改邮件表单验证规则
       updateEmailFormRules: {},
@@ -180,13 +186,31 @@ export default {
     this.getUserInfo()
   },
   methods: {
-    next () {
+    // 下一步操作
+    async next () {
+      const { data: result } = await this.$http.post('/verify/check', null, { params: { key: window.sessionStorage.getItem('uid'), value: this.checkCode } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
       this.activeStep++
       this.activeTab_email = 'second'
       this.isDisabled.step1 = true
       this.isDisabled.step2 = false
       this.isDisabled.step3 = true
     },
+    // 完成修改邮箱
+    async finish () {
+      const { data: result } = await this.$http.put('/admin/' + window.sessionStorage.getItem('uid') + '/email', this.updateEmailForm)
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.activeStep++
+      this.activeTab_email = 'third'
+      this.isDisabled.step1 = true
+      this.isDisabled.step2 = true
+      this.isDisabled.step3 = false
+    },
+    // 获取用户信息
     async getUserInfo () {
       const { data: result } = await this.$http.get('/admin/' + window.sessionStorage.getItem('uid'))
       if (result.status !== 200) {
@@ -202,6 +226,15 @@ export default {
       }
       this.$message.success(result.message)
     },
+    // 获取激活码
+    async getActiveCode () {
+      const { data: result } = await this.$http.get('/verify/active', { params: { to: this.updateEmailForm.email } })
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.$message.success(result.message)
+    },
+    // 修改密码
     async updatePassword () {
       const { data: result } = await this.$http.put('/admin/' + window.sessionStorage.getItem('uid') + '/password', this.updatePasswordForm)
       if (result.status !== 200) {
