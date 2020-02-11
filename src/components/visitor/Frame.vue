@@ -71,26 +71,21 @@
       <div style="width: 70%; margin-left: 15%;">
         <el-row :gutter="20">
           <el-col :span="8">
-            <h5>友情链接</h5>
-            <el-row v-for="item in footerInfo.friendLinks" :key="item.id">
+            <h5>博客</h5>
+            <el-row v-for="item in footerInfo.blogLinks" :key="item.id">
               <el-link :underline="false" :href="item.linkUrl">{{ item.name }}</el-link>
             </el-row>
           </el-col>
           <el-col :span="8">
-            <h5>导航</h5>
-            <el-row v-for="item in footerInfo.navLinks" :key="item.id">
+            <h5>教程</h5>
+            <el-row v-for="item in footerInfo.courseLinks" :key="item.id">
               <el-link :underline="false" :href="item.linkUrl">{{ item.name }}</el-link>
             </el-row>
           </el-col>
           <el-col :span="8">
-            <h5>关注我</h5>
-            <el-row :gutter="10">
-              <el-col :span="6" v-for="item in footerInfo.followLinks" :key="item.id">
-                <el-link :underline="false" :href="item.linkUrl" :icon="item.iconUrl">{{ item.name }}</el-link>
-              </el-col>
-              <el-col :span="6"></el-col>
-              <el-col :span="6"></el-col>
-              <el-col :span="6"></el-col>
+            <h5>平台</h5>
+            <el-row v-for="item in footerInfo.platformLinks" :key="item.id">
+              <el-link :underline="false" :href="item.linkUrl">{{ item.name }}</el-link>
             </el-row>
           </el-col>
         </el-row>
@@ -111,19 +106,17 @@ export default {
       fastLinkList: [],
       input: '',
       footerInfo: {
-        friendLinks: [
-          { id: '1', name: '博客园', linkUrl: '', iconUrl: '' },
-          { id: '2', name: 'CSDN', linkUrl: '', iconUrl: '' },
-          { id: '3', name: '简书', linkUrl: '', iconUrl: '' }
+        blogLinks: [
+          { id: '1', name: '博客园', linkUrl: 'https://www.cnblogs.com/', iconUrl: 'https://www.cnblogs.com/favicon.ico' },
+          { id: '2', name: 'CSDN', linkUrl: 'https://www.csdn.net/', iconUrl: 'https://www.csdn.net/favicon.ico' }
         ],
-        navLinks: [
-          { id: '1', name: '博客', linkUrl: '', iconUrl: '' },
-          { id: '2', name: '关于', linkUrl: '', iconUrl: '' }
+        courseLinks: [
+          { id: '1', name: '菜鸟教程', linkUrl: 'http://www.runoob.com', iconUrl: 'https://www.runoob.com/favicon.ico' },
+          { id: '2', name: 'W3School', linkUrl: 'https://www.w3school.com.cn/', iconUrl: 'https://www.w3school.com/favicon.ico' }
         ],
-        followLinks: [
-          { id: '1', name: 'QQ', linkUrl: '', iconUrl: 'icon-QQ-24px' },
-          { id: '2', name: '微信', linkUrl: '', iconUrl: 'icon-wechat-24px' },
-          { id: '3', name: '微博', linkUrl: '', iconUrl: 'icon-webo-24px' }
+        platformLinks: [
+          { id: '1', name: 'LeetCode', linkUrl: 'https://leetcode-cn.com/', iconUrl: 'https://leetcode.com/favicon.ico' },
+          { id: '2', name: '思否', linkUrl: 'https://segmentfault.com/', iconUrl: 'https://segmentfault.com/favicon.ico' }
         ],
         Copyright: 'Copyright © 2020-2020 www.frankfang.me All Rights Reserved. 备案号：皖ICP备15012807号-1'
       }
@@ -150,6 +143,7 @@ export default {
       }
       this.fastLinkList = result.data
     },
+    // 搜索文章
     search () {
       if (this.input !== '') {
         return this.$router.push('/search/' + this.input)

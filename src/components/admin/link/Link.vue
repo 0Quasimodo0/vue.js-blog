@@ -21,6 +21,11 @@
             </template>
           </el-input>
         </el-form-item>
+        <el-form-item label="所属分类" prop="classifyId">
+          <el-select v-model="addForm.classifyId">
+            <el-option v-for="item in classifyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="* 快速导航">
           <el-switch v-model="addForm.visible"></el-switch>
         </el-form-item>
@@ -88,7 +93,6 @@
       </el-row>
       <el-table :data="linkList" stripe>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column label="链接ID" prop="id" width="70px"></el-table-column>
         <el-table-column label="名称" prop="name" width="120px"></el-table-column>
         <el-table-column label="链接地址" prop="linkUrl">
           <template slot-scope="scope">
@@ -101,6 +105,13 @@
               <el-avatar size="small" :src="scope.row.iconUrl" style="background-color: white; margin-right: 5px;"></el-avatar>
               <span>{{ scope.row.iconUrl }}</span>
             </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属分类" width="120px">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.classify.id" @change="changeClassify(scope.row)">
+              <el-option v-for="item in classifyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
           </template>
         </el-table-column>
         <el-table-column label="快速链接" prop="visible" width="80px">
@@ -135,12 +146,15 @@ export default {
       deleteLinkId: '',
       // 链接列表
       linkList: [],
+      // 分类列表
+      classifyList: [],
       // 添加表单
       addForm: {
         name: '',
         linkUrl: '',
         iconUrl: '',
-        visible: false
+        visible: false,
+        classifyId: ''
       },
       // 修改表单
       updateForm: {
@@ -159,25 +173,46 @@ export default {
         ],
         iconUrl: [
           { required: true, message: '请输入图标地址！', trigger: 'blur' }
+        ],
+        classifyId: [
+          { required: true, message: '请选择链接所属分类！', trigger: 'change' }
         ]
       }
     }
   },
   created () {
     this.getLinkList()
+    this.getClassifyList()
   },
   methods: {
     // 获取链接列表
     async getLinkList () {
-      const { data: result } = await this.$http.get('/link')
+      const { data: result } = await this.$http.get('/link', { params: { classify: true } })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
       this.linkList = result.data
     },
+    // 获取分类列表
+    async getClassifyList () {
+      const { data: result } = await this.$http.get('/classify')
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.classifyList = result.data
+    },
     // 设置链接为快速链接
     async changeVisible (linkInfo) {
       const { data: result } = await this.$http.put(`/admin/link/${linkInfo.id}?visible=${linkInfo.visible}`)
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.$message.success(result.message)
+      this.getLinkList()
+    },
+    // 修改链接分类
+    async changeClassify (linkInfo) {
+      const { data: result } = await this.$http.put(`/admin/link/${linkInfo.id}/classify/${linkInfo.classify.id}`)
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }

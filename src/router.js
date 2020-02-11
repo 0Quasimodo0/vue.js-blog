@@ -6,13 +6,13 @@ import Write from './components/admin/article/Write.vue'
 import List from './components/admin/article/List.vue'
 import View from './components/admin/article/View.vue'
 import Welcome from './components/admin/Welcome.vue'
-import Modify from './components/admin/article/Modify.vue'
+import Update from './components/admin/article/Update.vue'
 import Frame from './components/visitor/Frame.vue'
 import Index from './components/visitor/Index.vue'
 import Posts from './components/visitor/Posts.vue'
-import TagList from './components/admin/tag/List.vue'
-import CategoryList from './components/admin/category/List.vue'
-import Link from './components/admin/collection/Link.vue'
+import TagList from './components/admin/article/Tag.vue'
+import CategoryList from './components/admin/article/Category.vue'
+import Link from './components/admin/link/Link.vue'
 import Info from './components/admin/Info.vue'
 import Setting from './components/admin/Setting.vue'
 import Search from './components/visitor/Search.vue'
@@ -47,7 +47,7 @@ const router = new Router({
         { path: '/admin/article/write', component: Write, meta: { requireLogin: true } },
         { path: '/admin/dashboard', component: Welcome, meta: { requireLogin: true } },
         { path: '/admin/article/view/:id', component: View, meta: { requireLogin: true } },
-        { path: '/admin/article/modify/:id', component: Modify, meta: { requireLogin: true } },
+        { path: '/admin/article/modify/:id', component: Update, meta: { requireLogin: true } },
         { path: '/admin/tag/list', component: TagList, meta: { requireLogin: true } },
         { path: '/admin/category/list', component: CategoryList, meta: { requireLogin: true } },
         { path: '/admin/link', component: Link, meta: { requireLogin: true } },
