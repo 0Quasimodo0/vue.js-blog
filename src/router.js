@@ -13,6 +13,7 @@ import Posts from './components/visitor/Posts.vue'
 import TagList from './components/admin/article/Tag.vue'
 import CategoryList from './components/admin/article/Category.vue'
 import Link from './components/admin/link/Link.vue'
+import Classify from './components/admin/link/Classify.vue'
 import Info from './components/admin/Info.vue'
 import Setting from './components/admin/Setting.vue'
 import Search from './components/visitor/Search.vue'
@@ -34,10 +35,10 @@ const router = new Router({
         { path: '/search/:key', component: Search, meta: { requireLogin: false } },
         { path: '/category', component: Category, meta: { requireLogin: false } },
         { path: '/tag/:id', component: Tag, meta: { requireLogin: false } },
-        { path: '/about', component: About, meta: { requireLogin: false } },
-        { path: '/login', component: Login, meta: { requireLogin: false } }
+        { path: '/about', component: About, meta: { requireLogin: false } }
       ]
     },
+    { path: '/login', component: Login, meta: { requireLogin: false } },
     { path: '/admin',
       component: Dashboard,
       meta: { requireLogin: true },
@@ -51,6 +52,7 @@ const router = new Router({
         { path: '/admin/tag/list', component: TagList, meta: { requireLogin: true } },
         { path: '/admin/category/list', component: CategoryList, meta: { requireLogin: true } },
         { path: '/admin/link', component: Link, meta: { requireLogin: true } },
+        { path: '/admin/classify', component: Classify, meta: { requireLogin: true } },
         { path: '/admin/info', component: Info, meta: { requireLogin: true } },
         { path: '/admin/setting', component: Setting, meta: { requireLogin: true } }
       ]

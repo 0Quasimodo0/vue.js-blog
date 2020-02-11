@@ -1,12 +1,11 @@
 <template>
   <el-container>
     <el-header>
-      <h3 style="margin: 0px; align-items: center; display: flex; font-size:20pt; color: #409EFF;"><i class="icon-logo-128px"></i>MyBlog</h3>
+      <h3 style="margin: 0px; align-items: center; display: flex; font-size:20pt; color: #409EFF;"><i class="icon-logo-128px"></i>{{ websiteInfo.brand }}</h3>
       <el-menu mode="horizontal" class="nav-head" :router="true">
         <el-input placeholder="请输入内容" prefix-icon="el-icon-search" size="small" class="nav-head-input" v-model="input" clearable @input="search()"></el-input>
         <el-menu-item index="/index">首页</el-menu-item>
         <el-menu-item index="/category" >博客</el-menu-item>
-        <el-menu-item index="/about">关于</el-menu-item>
       </el-menu>
     </el-header>
     <el-main>
@@ -21,7 +20,7 @@
                       <i class="icon-write-24px"></i>
                       <h4 style="margin: 5px;">博客随笔</h4>
                     </div>
-                    <el-button icon="el-icon-view" type="text">查看</el-button>
+                    <el-button icon="el-icon-view" type="text" @click="lookBlog()">查看</el-button>
                   </div>
                 </template>
                 <el-submenu :index="category.id + '' " v-for="category in menuList" :key="category.id">
@@ -52,7 +51,7 @@
                       <i class="icon-link-24px"></i>
                       <h4 style="margin: 5px;">快速导航</h4>
                     </div>
-                    <el-button type="text">更多 >></el-button>
+                    <el-button type="text" @click="lookLink()">更多 >></el-button>
                   </div>
                 </template>
                 <el-menu-item :index="item.id + ''" v-for="item in fastLinkList" :key="item.id">
@@ -90,7 +89,7 @@
           </el-col>
         </el-row>
         <div style="text-align: center;">
-          <p style="color: grey; font-size: small; margin: 20px;">{{ footerInfo.Copyright }}</p>
+          <p style="color: grey; font-size: small; margin: 20px;">{{ websiteInfo.copyright }}</p>
         </div>
       </div>
     </el-footer>
@@ -105,6 +104,10 @@ export default {
       // 快速导航链接
       fastLinkList: [],
       input: '',
+      websiteInfo: {
+        brand: '',
+        Copyright: ''
+      },
       footerInfo: {
         blogLinks: [
           { id: '1', name: '博客园', linkUrl: 'https://www.cnblogs.com/', iconUrl: 'https://www.cnblogs.com/favicon.ico' },
@@ -117,16 +120,23 @@ export default {
         platformLinks: [
           { id: '1', name: 'LeetCode', linkUrl: 'https://leetcode-cn.com/', iconUrl: 'https://leetcode.com/favicon.ico' },
           { id: '2', name: '思否', linkUrl: 'https://segmentfault.com/', iconUrl: 'https://segmentfault.com/favicon.ico' }
-        ],
-        Copyright: 'Copyright © 2020-2020 www.frankfang.me All Rights Reserved. 备案号：皖ICP备15012807号-1'
+        ]
       }
     }
   },
   created () {
     this.getCategory()
     this.getLinkList()
+    this.getWebsiteInfo()
   },
   methods: {
+    async getWebsiteInfo () {
+      const { data: result } = await this.$http.get('/setting')
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.websiteInfo = result.data
+    },
     // 获取左侧导航栏
     async getCategory () {
       const { data: result } = await this.$http.get('/category')
@@ -149,6 +159,13 @@ export default {
         return this.$router.push('/search/' + this.input)
       }
       this.$router.push('/category')
+    },
+    // 查看博客
+    lookBlog () {
+      this.$router.push('/category')
+    },
+    lookLink () {
+      this.$router.push('/')
     }
   }
 }

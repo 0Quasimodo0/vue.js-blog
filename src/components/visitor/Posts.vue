@@ -6,14 +6,17 @@
     <h1 class="info-title">{{ article.title }}</h1>
     <!-- 基本信息 -->
     <div class="info-header">
-      <i class="icon-author-success-48px"></i>
+      <i class="icon-author-48px"></i>
       <div class="info-header-author">
-        <h3 class="info-header-author-name">Quasimodo</h3>
+        <h3 class="info-header-author-name">Frank Fang</h3>
         <p class="info-header-author-date">发布时间：{{ article.date }}</p>
       </div>
     </div>
     <div class="info-tags">
-      <h4>【 {{ article.category.name }} 】</h4>
+      <div style="align-items: center; display: flex;">
+        <i class="icon-category2-24px"></i>
+        <h5 style="margin-left: 5px; margin-right: 5px;">{{ article.category.name }}</h5>
+      </div>
       <el-tag v-for="(tag, index) in article.tags" :key="tag.id" :type="tagTypes[index%5]" effect="dark" size="small">
         {{ tag.name }}
       </el-tag>

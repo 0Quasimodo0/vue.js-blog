@@ -321,3 +321,56 @@
     background-size: 64px 64px;
     background-repeat: no-repeat;
 }
+
+.icon-tag-success-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-tag-success.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-tag-primary-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-tag-primary.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-tag-warning-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-tag-warning.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-tag-danger-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-tag-danger.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+.icon-tag-info-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-tag-info.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-author-48px {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    background-image: url(../image/icon-author.png);
+    background-size: 48px 48px;
+    background-repeat: no-repeat;
+}

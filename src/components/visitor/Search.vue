@@ -1,10 +1,5 @@
 <template>
   <el-card>
-    <div style="display: flex; align-items: center;">
-      <el-input type="text" placeholder="请输入内容">
-        <el-button slot="append" icon="el-icon-search"></el-button>
-      </el-input>
-    </div>
     <!-- 文章列表 -->
     <el-card v-for="(article, index) in articleList" :key="article.id" shadow="hover" class="ArticleCard">
       <div style="display: flex; align-items: center; justify-content: flex-start;">

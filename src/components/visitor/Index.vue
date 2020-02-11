@@ -23,18 +23,23 @@
         <h3>模块正在开发中...</h3>
       </el-tab-pane>
       <el-tab-pane label="导航链接" name="third">
-        <el-row :gutter="10">
-          <el-col :span="12" v-for="item in linkList" :key="item.id" style="margin-bottom: 10px;">
-            <div class="link-card">
-              <el-avatar :src="item.iconUrl" style="background-color: white;"></el-avatar>
-              <div style="margin-left: 8px;">
-                <h5 style="margin: 0px;">{{ item.name }}</h5>
-                <el-link :href="item.linkUrl" :underline="false" style="margin: 0px;">{{ item.linkUrl }}</el-link>
+        <div v-for="classify in linkList" :key="classify.id">
+          <div style="margin: 5px;">
+            <h4 style="margin: 0px;"><i class="el-icon-s-unfold" style="margin: 10px;"></i>{{ classify.name }}</h4>
+          </div>
+          <el-row :gutter="10">
+            <el-col :span="12" v-for="item in classify.links" :key="item.id" style="margin-bottom: 10px;">
+              <div class="link-card">
+                <el-avatar :src="item.iconUrl" style="background-color: white;"></el-avatar>
+                <div style="margin-left: 8px;">
+                  <h5 style="margin: 0px;">{{ item.name }}</h5>
+                  <el-link :href="item.linkUrl" :underline="false" style="margin: 0px;">{{ item.linkUrl }}</el-link>
+                </div>
               </div>
-            </div>
-          </el-col>
-          <el-col :span="12" style="margin-bottom: 10px;"></el-col>
-        </el-row>
+            </el-col>
+            <el-col :span="12" style="margin-bottom: 10px;"></el-col>
+          </el-row>
+        </div>
       </el-tab-pane>
     </el-tabs>
   </el-card>
@@ -78,7 +83,7 @@ export default {
     },
     // 获取导航链接
     async getLinkList () {
-      const { data: result } = await this.$http.get('/link')
+      const { data: result } = await this.$http.get('/classify', { params: { links: true } })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }

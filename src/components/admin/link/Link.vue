@@ -195,7 +195,7 @@ export default {
     },
     // 获取分类列表
     async getClassifyList () {
-      const { data: result } = await this.$http.get('/classify')
+      const { data: result } = await this.$http.get('/classify', { params: { links: false } })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }

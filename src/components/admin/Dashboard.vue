@@ -50,6 +50,15 @@
               <span>链接管理</span>
             </template>
           </el-menu-item>
+          <el-menu-item index="/admin/classify">
+            <!-- 二级菜单的模板区 -->
+            <template slot="title">
+              <!-- 图标 -->
+              <i class="el-icon-edit"></i>
+              <!-- 文本-->
+              <span>分类管理</span>
+            </template>
+          </el-menu-item>
           <el-menu-item index="/admin/info">
             <i class="el-icon-user"></i>
             <span slot="title">信息管理</span>

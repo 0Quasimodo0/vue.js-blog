@@ -32,10 +32,9 @@
       <!-- 文章列表区 -->
       <el-table :data="articleList" stripe>
         <el-table-column type="index" label="#" width="40px"></el-table-column>
-        <el-table-column label="文章ID" prop="id" width="70px"></el-table-column>
         <el-table-column label="标题" prop="title"></el-table-column>
-        <el-table-column label="发布时间" prop="date" sortable="true"></el-table-column>
-        <el-table-column label="所属目录" prop="category.name" width="80px"></el-table-column>
+        <el-table-column label="发布时间" prop="date"></el-table-column>
+        <el-table-column label="所属目录" prop="category.name" width="100px"></el-table-column>
         <el-table-column label="所属标签" width="250px">
           <template slot-scope="scope">
             <el-tag v-for="(tag, index) in scope.row.tags" :key="tag.id" :type="tagsType[index%5]" effect="light" size="small" style="margin: 3px;">

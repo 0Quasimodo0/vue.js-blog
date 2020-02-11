@@ -3,28 +3,20 @@
     <el-tabs v-model="tabsActiveName" stretch>
       <el-tab-pane label="分类整理" name="first">
         <div class="category" v-for="category in categoryList" :key="category.id">
-          <div class="category-header" name="category.id">
-            <div class="category-header-title">
-              <h4><i class="el-icon-s-unfold" style="margin: 10px;"></i>{{ category.name }}</h4>
-            </div>
+          <div style="margin: 5px;">
+            <h4 style="margin: 0px;"><i class="el-icon-s-unfold" style="margin: 10px;"></i>{{ category.name }}</h4>
           </div>
-          <div class="category-body">
-            <el-row :gutter="10">
-              <el-col :span="12" v-for="(tag, index) in category.tags" :key="tag.id">
-                <el-card
-                body-style="background-color: #F2F6FC; border-radius: 10px; padding: 10px; margin: 5px;"
-                shadow="hover">
-                  <div class="tag" style="display: flex; justify-content:space-between;">
-                    <i :class="tagIconClassList[index%5]"></i>
-                    <h4>{{ tag.name }}</h4>
-                    <el-button type="text" icon="el-icon-view" size="medium" @click="viewArticleListByTag(tag.id)">查看</el-button>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :span="12">
-              </el-col>
-            </el-row>
-          </div>
+          <el-row :gutter="10">
+            <el-col :span="8" v-for="(tag, index) in category.tags" :key="tag.id">
+              <div class="tag">
+                <i :class="tagIconClassList[index%5]"></i>
+                <h5>{{ tag.name }}</h5>
+                <el-button type="text" icon="el-icon-view" size="medium" @click="viewArticleListByTag(tag.id)">查看</el-button>
+              </div>
+            </el-col>
+            <el-col :span="8"></el-col>
+            <el-col :span="8"></el-col>
+          </el-row>
         </div>
       </el-tab-pane>
       <el-tab-pane label="文章列表" name="second">
@@ -88,21 +80,25 @@ export default {
       },
       // 文章总数
       total: '',
-      // 搜索关键字
-      searchInput: '',
       // 自定义图标类名
       tagIconClassList: [
-        'icon-tag-success-64px',
-        'icon-tag-primary-64px',
-        'icon-tag-warning-64px',
-        'icon-tag-danger-64px',
-        'icon-tag-info-64px'
+        'icon-tag-success-36px',
+        'icon-tag-primary-36px',
+        'icon-tag-warning-36px',
+        'icon-tag-danger-36px',
+        'icon-tag-info-36px'
       ],
       // 标签类型
       tagTypes: ['success', 'primary', 'warning', 'danger', 'info'],
       // 图标类名列表
       iconClassList: {
-        article: ['icon-article-success-64px', 'icon-article-primary-64px', 'icon-article-warning-64px', 'icon-article-danger-64px', 'icon-article-info-64px']
+        article: [
+          'icon-article-success-64px',
+          'icon-article-primary-64px',
+          'icon-article-warning-64px',
+          'icon-article-danger-64px',
+          'icon-article-info-64px'
+        ]
       }
     }
   },
@@ -153,5 +149,13 @@ export default {
 <style lang="less" scoped>
 .el-pagination {
   margin-top: 15px;
+}
+.tag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #F2F6FC;
+  border-radius: 8px;
+  padding: 0px 8px 0px 8px;
 }
 </style>
