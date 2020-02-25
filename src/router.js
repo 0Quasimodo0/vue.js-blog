@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from './components/admin/Login.vue'
+import Login from './components/visitor/Login.vue'
 import Dashboard from './components/admin/Dashboard.vue'
 import Write from './components/admin/article/Write.vue'
 import List from './components/admin/article/List.vue'
@@ -35,10 +35,10 @@ const router = new Router({
         { path: '/search/:key', component: Search, meta: { requireLogin: false } },
         { path: '/category', component: Category, meta: { requireLogin: false } },
         { path: '/tag/:id', component: Tag, meta: { requireLogin: false } },
-        { path: '/about', component: About, meta: { requireLogin: false } }
+        { path: '/about', component: About, meta: { requireLogin: false } },
+        { path: '/login', component: Login, meta: { requireLogin: false } }
       ]
     },
-    { path: '/login', component: Login, meta: { requireLogin: false } },
     { path: '/admin',
       component: Dashboard,
       meta: { requireLogin: true },

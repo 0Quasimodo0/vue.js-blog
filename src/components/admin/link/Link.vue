@@ -83,8 +83,8 @@
       <!-- 搜索区 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="pageInfo.key">
+            <el-button slot="append" icon="el-icon-search" @click="getLinkList()"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -128,6 +128,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageInfo.pageNum"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="pageInfo.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            background>
+          </el-pagination>
     </el-card>
   </div>
 </template>
@@ -177,7 +187,14 @@ export default {
         classifyId: [
           { required: true, message: '请选择链接所属分类！', trigger: 'change' }
         ]
-      }
+      },
+      // 页面信息
+      pageInfo: {
+        key: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      total: 0
     }
   },
   created () {
@@ -185,13 +202,26 @@ export default {
     this.getClassifyList()
   },
   methods: {
+    // 监听pageSize改变的事件
+    handleSizeChange (newSize) {
+      this.pageInfo.pageSize = newSize
+      this.getLinkList()
+    },
+    // 监听页码值改变的事件
+    handleCurrentChange (newPage) {
+      this.pageInfo.pageNum = newPage
+      this.getLinkList()
+    },
     // 获取链接列表
     async getLinkList () {
-      const { data: result } = await this.$http.get('/link', { params: { classify: true } })
+      const { data: result } = await this.$http.get('/admin/link', { params: this.pageInfo })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
-      this.linkList = result.data
+      this.linkList = result.data.list
+      this.pageInfo.pageNum = result.data.pageNum
+      this.pageInfo.pageSize = result.data.pageSize
+      this.total = result.data.total
     },
     // 获取分类列表
     async getClassifyList () {
@@ -203,7 +233,7 @@ export default {
     },
     // 设置链接为快速链接
     async changeVisible (linkInfo) {
-      const { data: result } = await this.$http.put(`/admin/link/${linkInfo.id}?visible=${linkInfo.visible}`)
+      const { data: result } = await this.$http.put('/admin/link', { id: linkInfo.id, shortcut: linkInfo.visible })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -212,7 +242,7 @@ export default {
     },
     // 修改链接分类
     async changeClassify (linkInfo) {
-      const { data: result } = await this.$http.put(`/admin/link/${linkInfo.id}/classify/${linkInfo.classify.id}`)
+      const { data: result } = await this.$http.put('/admin/link', { id: linkInfo.id, classifyId: linkInfo.classify.id })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -292,5 +322,10 @@ export default {
 .el-breadcrumb {
   margin-bottom: 15px;
   font-size: 15px;
+}
+.el-table {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 </style>

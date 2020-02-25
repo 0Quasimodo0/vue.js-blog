@@ -48,8 +48,8 @@
       <!-- 搜索区 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="pageInfo.key">
+            <el-button slot="append" icon="el-icon-search" @click="getCategoryList()"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -70,6 +70,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageInfo.pageNum"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="pageInfo.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            background>
+          </el-pagination>
     </el-card>
   </div>
 </template>
@@ -108,26 +118,46 @@ export default {
       // 目录列表
       categoryList: [],
       // 要删除目录的id
-      deleteCategoryId: ''
+      deleteCategoryId: '',
+      // 页面信息
+      pageInfo: {
+        key: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      total: 0
     }
   },
   created () {
     this.getCategoryList()
   },
   methods: {
+    // 监听pageSize改变的事件
+    handleSizeChange (newSize) {
+      this.pageInfo.pageSize = newSize
+      this.getCategoryList()
+    },
+    // 监听页码值改变的事件
+    handleCurrentChange (newPage) {
+      this.pageInfo.pageNum = newPage
+      this.getCategoryList()
+    },
     // 获取目录列表
     async getCategoryList () {
-      const { data: result } = await this.$http.get('/admin/category/list')
+      const { data: result } = await this.$http.get('/admin/category', { params: this.pageInfo })
       if (result.status !== 200) {
         this.$message.error(result.message)
       }
-      this.categoryList = result.data
+      this.categoryList = result.data.list
+      this.pageInfo.pageNum = result.data.pageNum
+      this.pageInfo.pageSize = result.data.pageSize
+      this.total = result.data.total
     },
     // 添加目录
     async addCategory () {
       this.$refs.addFormRef.validate(async valid => {
         if (valid) {
-          const { data: result } = await this.$http.post('/admin/category/add', this.addForm)
+          const { data: result } = await this.$http.post('/admin/category', this.addForm)
           if (result.status !== 200) {
             return this.$message.error(result.message)
           }
@@ -154,8 +184,7 @@ export default {
     async updateCategory () {
       this.$refs.updateFormRef.validate(async valid => {
         if (valid) {
-          console.log(this.updateForm)
-          const { data: result } = await this.$http.put('/admin/category/update', this.updateForm)
+          const { data: result } = await this.$http.put('/admin/category', this.updateForm)
           if (result.status !== 200) {
             return this.$message.error(result.message)
           }
@@ -180,7 +209,7 @@ export default {
     // 删除标签
     async deleteCategory (id) {
       this.isDeleteDialogVisible = false
-      const { data: result } = await this.$http.delete('/admin/category/delete/' + id)
+      const { data: result } = await this.$http.delete('/admin/category/' + id)
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -198,6 +227,7 @@ export default {
 }
 .el-table {
   margin-top: 15px;
+  margin-bottom: 15px;
   font-size: 14px;
 }
 </style>

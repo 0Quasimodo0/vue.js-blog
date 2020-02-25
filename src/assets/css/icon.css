@@ -16,51 +16,6 @@
     background-repeat: no-repeat;
 }
 
-.icon-tag-success-64px {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    background-image: url(../image/icon-tag-success-64px.png);
-    background-size: 64px 64px;
-    background-repeat: no-repeat;
-}
-
-.icon-tag-primary-64px {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    background-image: url(../image/icon-tag-primary-64px.png);
-    background-size: 64px 64px;
-    background-repeat: no-repeat;
-}
-
-.icon-tag-info-64px {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    background-image: url(../image/icon-tag-info-64px.png);
-    background-size: 64px 64px;
-    background-repeat: no-repeat;
-}
-
-.icon-tag-warning-64px {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    background-image: url(../image/icon-tag-warning-64px.png);
-    background-size: 64px 64px;
-    background-repeat: no-repeat;
-}
-
-.icon-tag-danger-64px {
-    display: inline-block;
-    width: 64px;
-    height: 64px;
-    background-image: url(../image/icon-tag-danger-64px.png);
-    background-size: 64px 64px;
-    background-repeat: no-repeat;
-}
-
 .icon-author-success-48px {
     display: inline-block;
     width: 48px;
@@ -162,10 +117,10 @@
 
 .icon-logo-128px {
     display: inline-block;
-    width: 48px;
-    height: 48px;
-    background-image: url(../image/icon-logo-128px.png);
-    background-size: 48px 48px;
+    width: 40px;
+    height: 36px;
+    background-image: url(../image/logo.png);
+    background-size: 40px 36px;
     background-repeat: no-repeat;
 }
 
@@ -366,11 +321,156 @@
     background-repeat: no-repeat;
 }
 
+/* 第二组标签 */
+
+.icon-tag2-success-24px {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url(../image/icon-tag2-success.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+}
+
+.icon-tag2-primary-24px {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url(../image/icon-tag2-primary.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+}
+
+.icon-tag2-warning-24px {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url(../image/icon-tag2-warning.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+}
+
+.icon-tag2-danger-24px {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url(../image/icon-tag2-danger.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+}
+.icon-tag2-info-24px {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-image: url(../image/icon-tag2-info.png);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+}
+
 .icon-author-48px {
     display: inline-block;
     width: 48px;
     height: 48px;
     background-image: url(../image/icon-author.png);
     background-size: 48px 48px;
+    background-repeat: no-repeat;
+}
+
+.icon-backtop-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-backtop.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-backtop2-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-backtop2.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-backtop3-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-backtop3.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-top-info-36px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-top-info.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-top-primary-32px {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background-image: url(../image/icon-top-primary.png);
+    background-size: 28px 28px;
+    background-repeat: no-repeat;
+}
+
+.icon-index-primary-32px {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background-image: url(../image/icon-index-primary.png);
+    background-size: 28px 28px;
+    background-repeat: no-repeat;
+}
+
+.icon-index-info-32px {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url(../image/icon-index-info.png);
+    background-size: 32px 32px;
+    background-repeat: no-repeat;
+}
+
+.icon-link-primary-32px {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background-image: url(../image/icon-link-primary.png);
+    background-size: 28px 28px;
+    background-repeat: no-repeat;
+}
+
+.icon-link-info-32px {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url(../image/icon-link-info.png);
+    background-size: 32px 32px;
+    background-repeat: no-repeat;
+}
+
+.icon-calendar-primary-128px {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    background-image: url(../image/icon-calendar-primary.png);
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+}
+
+.icon-user-primary-36px {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-image: url(../image/icon-user-primary.png);
+    background-size: 40px 40px;
     background-repeat: no-repeat;
 }

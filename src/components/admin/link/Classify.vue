@@ -154,7 +154,6 @@ export default {
     async updateCategory () {
       this.$refs.updateFormRef.validate(async valid => {
         if (valid) {
-          console.log(this.updateForm)
           const { data: result } = await this.$http.put(`/admin/classify/${this.updateForm.id}`, this.updateForm)
           if (result.status !== 200) {
             return this.$message.error(result.message)

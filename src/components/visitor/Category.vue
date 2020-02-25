@@ -1,103 +1,135 @@
 <template>
-  <el-card shadow="never">
-    <el-tabs v-model="tabsActiveName" stretch>
-      <el-tab-pane label="分类整理" name="first">
-        <div class="category" v-for="category in categoryList" :key="category.id">
-          <div style="margin: 5px;">
-            <h4 style="margin: 0px;"><i class="el-icon-s-unfold" style="margin: 10px;"></i>{{ category.name }}</h4>
-          </div>
-          <el-row :gutter="10">
-            <el-col :span="8" v-for="(tag, index) in category.tags" :key="tag.id">
-              <div class="tag">
-                <i :class="tagIconClassList[index%5]"></i>
-                <h5>{{ tag.name }}</h5>
-                <el-button type="text" icon="el-icon-view" size="medium" @click="viewArticleListByTag(tag.id)">查看</el-button>
+  <div class="container">
+    <el-row :gutter="10">
+      <el-col :span="5">
+        <div ref="categoryNavRef" style="padding: 0px;">
+          <el-card shadow="never" body-style="padding: 0px;">
+            <div class="nav-title">
+              <h4><i class="icon-write-24px"></i>博客随笔</h4>
+            </div>
+            <el-menu text-color="#303133" active-text-color="#409EFF" :router="true" v-for="category in categoryNavList" :key="category.id">
+              <div class="category">
+                <div>
+                  <i class="el-icon-s-fold"></i>
+                  <p>{{ category.name }}</p>
+                </div>
+                <el-menu-item v-for="(tag, i) in category.tags" :key="tag.id" :index=" '/tag/' + tag.id ">
+                  <template slot="title">
+                    <i :class="iconClassList.tagList[i%5]"></i>
+                    <span style="margin-left: 5px;">{{ tag.name }}</span>
+                  </template>
+                </el-menu-item>
               </div>
-            </el-col>
-            <el-col :span="8"></el-col>
-            <el-col :span="8"></el-col>
-          </el-row>
+            </el-menu>
+          </el-card>
         </div>
-      </el-tab-pane>
-      <el-tab-pane label="文章列表" name="second">
-        <!-- 文章列表 -->
-        <el-card v-for="(article, index) in articleList" :key="article.id" shadow="hover" class="ArticleCard">
-          <div style="display: flex; align-items: center; justify-content: flex-start;">
-            <i :class="iconClassList.article[index%5]"></i>
-            <div style="margin-left: 8px;">
-              <h3 style="margin-bottom: 10px;">{{ article.title }}</h3>
-              <p style="color: grey; font-size: small; margin-top: 0px;">简介：{{ article.introduction }}</p>
-            </div>
+      </el-col>
+      <el-col :span="14">
+        <el-card shadow="never">
+          <!-- 搜素区 -->
+          <div class="search-area">
+            <el-input placeholder="请输入关键词以搜索文章" clearable v-model="queryInfo.key" @input="search()">
+              <i slot="prefix" class="el-input__icon el-icon-search"></i>
+            </el-input>
           </div>
-          <div style="align-items: center; display: flex; justify-content: space-between;">
-            <div style="align-items: center; display: flex;">
-              <div style="align-items: center; display: flex;">
-                <i class="icon-category2-24px"></i>
-                <h5 style="margin-left: 5px; margin-right: 5px;">{{ article.category.name }}</h5>
+          <!-- 文章列表 -->
+          <div class="dynamic" v-for="(item, index) in articleList" :key="item.id">
+            <div class="dynamic-top">
+              <i :class="iconClassList.article[index%5]"></i>
+              <div>
+                <el-link :underline="false" :href=" '/#/article/' + item.id ">
+                  <h3>{{ item.title }}</h3>
+                </el-link>
+                <p>{{ item.introduction }}</p>
               </div>
-              <el-tag v-for="(tag, index) in article.tags" :key="tag.id"
-              :type="tagTypes[index%5]" style="margin: 5px;" effect="light">
-                {{ tag.name }}
-              </el-tag>
             </div>
-            <el-button icon="el-icon-view"
-            type="primary"
-            size="small"
-            round
-            style="justify-content: flex-end;"
-            @click="viewArticle(article.id)">查看</el-button>
+            <div class="dynamic-bottom">
+              <div class="dynamic-bottom-category">
+                <p><i class="el-icon-s-fold"></i>{{ item.category.name }}</p>
+              </div>
+              <div class="dynamic-bottom-tags">
+                <el-tag v-for="(tag, i) in item.tags" :key="tag.id" :type="iconClassList.tag[i%5]">{{ tag.name }}</el-tag>
+              </div>
+            </div>
+            <p>发布于 {{ item.date }}</p>
+            <el-divider ></el-divider>
           </div>
+          <!-- 分页区 -->
+          <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="queryInfo.pageNum"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="queryInfo.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+                background>
+              </el-pagination>
         </el-card>
-        <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryInfo.pageNum"
-              :page-sizes="[5, 10, 15, 20]"
-              :page-size="queryInfo.pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-              background>
-            </el-pagination>
-      </el-tab-pane>
-    </el-tabs>
-  </el-card>
+      </el-col>
+      <el-col :span="5">
+        <div ref="rightNavRef" style="padding: 0px;">
+          <el-card shadow="never" style="margin-bottom: 10px;">
+            推荐
+          </el-card>
+          <el-card shadow="never" body-style="padding: 0px;">
+            <div class="nav-title">
+              <h4><i class="icon-link-24px"></i>快速导航</h4>
+            </div>
+            <el-menu>
+              <el-menu-item :index="item.id + ''" v-for="item in fastLinkNavList" :key="item.id">
+                <template slot="title">
+                  <el-avatar size="small" :src="item.iconUrl" style="background-color: white; margin-right: 5px;"></el-avatar>
+                  <el-link :underline="false" :href="item.linkUrl">{{ item.name }}</el-link>
+                </template>
+              </el-menu-item>
+            </el-menu>
+          </el-card>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
 export default {
+  inject: ['reload'],
   data () {
     return {
-      // 默认激活tab名称
-      tabsActiveName: 'first',
+      // 快速导航列表
+      fastLinkNavList: [],
       // 目录列表
-      categoryList: [],
+      categoryNavList: [],
       // 文章列表
       articleList: [],
       // 获取文章列表的参数对象
       queryInfo: {
-        pageNum: '',
-        pageSize: ''
+        key: '',
+        pageNum: 1,
+        pageSize: 10,
+        reverse: false
       },
       // 文章总数
-      total: '',
-      // 自定义图标类名
-      tagIconClassList: [
-        'icon-tag-success-36px',
-        'icon-tag-primary-36px',
-        'icon-tag-warning-36px',
-        'icon-tag-danger-36px',
-        'icon-tag-info-36px'
-      ],
-      // 标签类型
-      tagTypes: ['success', 'primary', 'warning', 'danger', 'info'],
+      total: 0,
       // 图标类名列表
       iconClassList: {
+        // 文章
         article: [
           'icon-article-success-64px',
           'icon-article-primary-64px',
           'icon-article-warning-64px',
           'icon-article-danger-64px',
           'icon-article-info-64px'
+        ],
+        // 标签
+        tag: ['success', 'primary', 'warning', 'danger', 'info'],
+        // 标签列表
+        tagList: [
+          'icon-tag2-primary-24px',
+          'icon-tag2-success-24px',
+          'icon-tag2-warning-24px',
+          'icon-tag2-danger-24px',
+          'icon-tag2-info-24px'
         ]
       }
     }
@@ -105,6 +137,10 @@ export default {
   created () {
     this.getArticleList()
     this.getCategoryList()
+    this.getFastLinkNav()
+  },
+  mounted () {
+    window.addEventListener('scroll', this.handleScroll)
   },
   methods: {
     // 监听pageSize改变的事件
@@ -117,45 +153,158 @@ export default {
       this.queryInfo.pageNum = newPage
       this.getArticleList()
     },
-    // 获取目录列表
-    async getCategoryList () {
-      const { data: result } = await this.$http.get('/category')
+    // 获取动态列表
+    async getFastLinkNav () {
+      const { data: result } = await this.$http.get('/menu/link')
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
-      this.categoryList = result.data
+      this.fastLinkNavList = result.data
+    },
+    // 获取目录列表
+    async getCategoryList () {
+      const { data: result } = await this.$http.get('/menu/category')
+      if (result.status !== 200) {
+        return this.$message.error(result.message)
+      }
+      this.categoryNavList = result.data
     },
     // 获取文章列表
     async getArticleList () {
-      const { data: result } = await this.$http.post('/article/list', this.queryInfo)
+      const { data: result } = await this.$http.get('/article', { params: this.queryInfo })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
       this.articleList = result.data.list
-      this.queryInfo = result.data
+      this.queryInfo.pageNum = result.data.pageNum
+      this.queryInfo.pageSize = result.data.pageSize
       this.total = result.data.total
     },
     // 根据标签查找文章列表
     viewArticleListByTag (id) {
       this.$router.push('/tag/' + id)
     },
-    async viewArticle (id) {
-      this.$router.push('/article/' + id)
+    search () {
+      if (this.queryInfo.key !== '') {
+        return this.getArticleList()
+      }
+      this.reload()
+    },
+    // 处理滚动事件
+    handleScroll () {
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      if (scrollTop <= 80) {
+        this.$refs.categoryNavRef.style.marginTop = 0 + 'px'
+        this.$refs.rightNavRef.style.marginTop = 0 + 'px'
+      }
+      if (scrollTop > 80) {
+        this.$refs.categoryNavRef.style.marginTop = scrollTop - 80 + 'px'
+        this.$refs.rightNavRef.style.marginTop = scrollTop - 80 + 'px'
+      }
     }
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll)
   }
 }
 </script>
 
 <style lang="less" scoped>
+.container{
+  width: 72%;
+  height: 500px;
+  margin-left: 14%;
+}
 .el-pagination {
   margin-top: 15px;
 }
 .tag {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background-color: #F2F6FC;
   border-radius: 8px;
   padding: 0px 8px 0px 8px;
+}
+.nav-title {
+  margin-left: 5px;
+  h4 {
+    align-items: center;
+    display: flex;
+    margin: 10px;
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+.category {
+  div {
+    background-color: #E4E7ED;
+    align-items: center;
+    display: flex;
+    p {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: small;
+      font-weight: bold;
+      color: #515151;
+    }
+    i {
+      margin-left: 8px;
+      margin-right: 5px;
+    }
+  }
+}
+.dynamic {
+  padding: 10px;
+  .dynamic-top {
+    align-items: center;
+    display: flex;
+    i {
+      margin-right: 10px;
+    }
+    div {
+      .el-link {
+        h3{
+          margin: 0px;
+        }
+      }
+      p{
+        margin: 0px;
+        margin-top: 5px;
+        color: #909399;
+        font-size: small;
+      }
+    }
+  }
+  .dynamic-bottom {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    .dynamic-bottom-category{
+      background-color: #F2F6FC;
+      border-radius: 5px;
+      margin: 10px;
+      margin-left: 0px;
+      padding: 8px;
+      p{
+        margin: 0px;
+        font-size: small;
+        font-weight: bold;
+      }
+    }
+    .dynamic-bottom-tags{
+      .el-tag{
+        margin-right: 8px;
+      }
+    }
+  }
+  p{
+    font-size: small;
+    color: #909399;
+    margin: 2px;
+  }
+  .el-divider{
+    margin: 5px;
+  }
 }
 </style>

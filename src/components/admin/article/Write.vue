@@ -13,21 +13,21 @@
         <el-form-item label="标题" prop="title">
           <el-input type="text" v-model="infoForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="所属目录" prop="categoryId">
-          <el-select v-model="infoForm.categoryId" clearable placeholder="请选择所属目录" @change="getTagList">
+        <el-form-item label="* 所属目录">
+          <el-select v-model="infoForm.category.id" clearable placeholder="请选择所属目录" @change="getTagList()">
             <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
-          <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px;">新建</el-button>
+          <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px;" @click="createCategory()">新建</el-button>
         </el-form-item>
         <el-form-item label="文章标签"  prop="tags">
-          <el-checkbox-group v-model="infoForm.tags" @change="cheakChange">
+          <el-checkbox-group v-model="infoForm.tags">
             <el-checkbox v-for="item in tagList" :key="item.id" :label="item" border size="small">{{ item.name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="已选标签">
           <div class="tagArea">
             <el-tag v-for="item in infoForm.tags" :key="item.id" style="margin-right: 10px;">{{ item.name }}</el-tag>
-            <el-button type="primary" icon="el-icon-plus" plain size="small">新建</el-button>
+            <el-button type="primary" icon="el-icon-plus" plain size="small" @click="createTag()">新建</el-button>
           </div>
         </el-form-item>
         <el-form-item label="简介" prop="introduction">
@@ -66,7 +66,10 @@ export default {
         // 简介
         introduction: '',
         // 目录id
-        categoryId: '',
+        category: {
+          id: '',
+          name: ''
+        },
         // 标签列表
         tags: [],
         // markdown格式内容
@@ -85,10 +88,6 @@ export default {
         introduction: [
           { required: true, message: '请输入文章简介（不超过 64 个字符）！', trigger: 'blur' },
           { min: 0, max: 64, message: '长度不能超过 64 个字符', trigger: 'blur' }
-        ],
-        // 验证是否选择目录
-        categoryId: [
-          { required: true, message: '请选择文章所属目录！', trigger: 'change' }
         ],
         // 验证是否选择标签
         tags: [
@@ -143,7 +142,7 @@ export default {
   methods: {
     // 获取目录列表
     async getCategoryList () {
-      const { data: result } = await this.$http.get('/admin/category/list')
+      const { data: result } = await this.$http.get('/admin/menu/category')
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -151,13 +150,19 @@ export default {
     },
     // 获取标签列表
     async getTagList () {
-      if (this.infoForm.categoryId !== null) {
-        const { data: result } = await this.$http.post('/admin/tag?cid=' + this.infoForm.categoryId)
+      if (this.infoForm.category.id !== null) {
+        const { data: result } = await this.$http.get('/admin/menu/tag?cid=' + this.infoForm.category.id)
         if (result.status !== 200) {
           return this.$message.error(result.message)
         }
         this.tagList = result.data
       }
+    },
+    createCategory () {
+      this.$router.push('/admin/category/list')
+    },
+    createTag () {
+      this.$router.push('/admin/tag/list')
     },
     // 文章内容修改触发事件
     contentChangeEvent (value, render) {
@@ -166,8 +171,8 @@ export default {
     // 提交文章
     submit () {
       this.$refs.infoFormRef.validate(async valid => {
-        if (this.infoForm.content_md !== '' && valid) {
-          const { data: result } = await this.$http.post('/admin/article/create', this.infoForm)
+        if (this.infoForm.content_md !== '' && this.infoForm.category.id !== '' && valid) {
+          const { data: result } = await this.$http.post('/admin/article', this.infoForm)
           if (result.status !== 200) {
             return this.$message.error('上传失败！')
           }

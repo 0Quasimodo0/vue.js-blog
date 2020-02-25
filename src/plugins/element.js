@@ -50,6 +50,7 @@ import { Step } from 'element-ui'
 import { Loading } from 'element-ui'
 import { Link } from 'element-ui'
 import { Switch } from 'element-ui'
+import { InfiniteScroll } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Container)
@@ -99,6 +100,7 @@ Vue.use(Step)
 Vue.use(Loading)
 Vue.use(Link)
 Vue.use(Switch)
+Vue.use(InfiniteScroll)
 
 // 挂载弹框提示组件
 Vue.prototype.$message = Message

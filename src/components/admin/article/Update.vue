@@ -13,14 +13,14 @@
         <el-form-item label="标题" prop="title">
           <el-input type="text" v-model="infoForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="所属目录" prop="categoryId">
-          <el-select v-model="infoForm.categoryId" clearable placeholder="请选择所属目录" @change="getTagList">
+        <el-form-item label="* 所属目录">
+          <el-select v-model="infoForm.category.id" clearable placeholder="请选择所属目录" @change="getTagList">
             <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
           <el-button type="primary" icon="el-icon-plus" style="margin-left: 10px;">新建</el-button>
         </el-form-item>
         <el-form-item label="文章标签"  prop="tags">
-          <el-checkbox-group v-model="infoForm.tags" @change="cheakChange">
+          <el-checkbox-group v-model="infoForm.tags">
             <el-checkbox v-for="tag in tagList" :key="tag.id" :label="tag" border size="small">{{ tag.name }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -46,8 +46,8 @@
           <el-button type="primary" plain icon="el-icon-upload2">上传</el-button>
         </div>
         <div class="button-right">
-          <el-button type="success" round @click="update">修改</el-button>
-          <el-button type="primary" round @click="getArticle">还原</el-button>
+          <el-button type="success" round @click="update()">修改</el-button>
+          <el-button type="primary" round @click="getArticle()">还原</el-button>
         </div>
       </div>
     </el-card>
@@ -58,24 +58,6 @@
 export default {
   data () {
     return {
-      // 路径参数
-      params: '',
-      // 原文章
-      article: {
-        id: '',
-        // 标题
-        title: '',
-        // 简介
-        introduction: '',
-        // 目录id
-        category: { id: '', name: '' },
-        // 标签列表
-        tags: [],
-        // markdown格式内容
-        content_md: '',
-        // html格式内容
-        content_html: ''
-      },
       // 目录列表
       categoryList: [],
       // 标签列表
@@ -88,7 +70,7 @@ export default {
         // 简介
         introduction: '',
         // 目录id
-        categoryId: '',
+        category: { id: '', name: '' },
         // 标签列表
         tags: [],
         // markdown格式内容
@@ -162,7 +144,7 @@ export default {
   methods: {
     // 获取目录列表
     async getCategoryList () {
-      const { data: result } = await this.$http.get('/admin/category/list')
+      const { data: result } = await this.$http.get('/admin/menu/category')
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -171,7 +153,7 @@ export default {
     // 获取标签列表
     async getTagList () {
       if (this.infoForm.categoryId !== null) {
-        const { data: result } = await this.$http.post('/admin/tag?cid=' + this.infoForm.categoryId)
+        const { data: result } = await this.$http.get('/admin/menu/tag?cid=' + this.infoForm.category.id)
         if (result.status !== 200) {
           return this.$message.error(result.message)
         }
@@ -180,22 +162,13 @@ export default {
     },
     // 获取文章
     async getArticle () {
-      this.params = this.$route.params
-      const { data: result } = await this.$http.post('/admin/article/update?id=' + this.params.id)
+      const { data: result } = await this.$http.get('/article/' + this.$route.params.id)
       if (result.status !== 200) {
         return this.$message.error('读取文章内容失败！')
       }
-      this.article = result.data
       // 显示原始信息
-      this.infoForm.id = this.article.id
-      this.infoForm.title = this.article.title
-      this.infoForm.introduction = this.article.introduction
-      this.infoForm.categoryId = this.article.category.id
-      this.infoForm.tags = this.article.tags
-      this.infoForm.content_md = this.article.content_md
-      this.infoForm.content_html = this.article.content_html
+      this.infoForm = result.data
       this.getTagList()
-      console.log(this.article)
     },
     // 正文改变事件
     contentChangeEvent (value, render) {
@@ -204,8 +177,8 @@ export default {
     // 提交修改请求
     update () {
       this.$refs.infoFormRef.validate(async valid => {
-        if (valid) {
-          const { data: result } = await this.$http.put('/admin/article/update', this.infoForm)
+        if (valid && this.infoForm.category.id !== '') {
+          const { data: result } = await this.$http.put('/admin/article', this.infoForm)
           if (result.status !== 200) {
             return this.$message.error(result.message)
           }

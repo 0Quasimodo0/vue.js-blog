@@ -13,8 +13,8 @@
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
         <el-form-item prop="categoryId">
-          <p>* 所属标签</p>
-          <el-select v-model="addForm.categoryId" clearable placeholder="请选择所属目录" @focus="getCategoryList">
+          <p>所属目录</p>
+          <el-select v-model="addForm.categoryId" clearable placeholder="请选择所属目录" @focus="getCategoryList()">
             <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
           <el-button type="primary" plain icon="el-icon-plus" style="margin-left: 10px;" @click="addCategory">新建</el-button>
@@ -34,8 +34,8 @@
           <el-input v-model="updateForm.name"></el-input>
         </el-form-item>
         <el-form-item prop="categoryId">
-          <p>* 所属目录</p>
-          <el-select v-model="updateForm.categoryId" clearable placeholder="请选择所属目录" @focus="getCategoryList">
+          <p>所属目录</p>
+          <el-select v-model="updateForm.categoryId" clearable placeholder="请选择所属目录" @focus="getCategoryList()">
             <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
           <el-button type="primary" plain icon="el-icon-plus" style="margin-left: 10px;" @click="addCategory">新建</el-button>
@@ -62,8 +62,8 @@
       <!-- 搜索区 -->
       <el-row :gutter="20">
         <el-col :span="10">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="pageInfo.key">
+            <el-button slot="append" icon="el-icon-search" @click="getTagList()"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -85,6 +85,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageInfo.pageNum"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="pageInfo.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            background>
+          </el-pagination>
     </el-card>
   </div>
 </template>
@@ -133,23 +143,43 @@ export default {
         categoryId: ''
       },
       // 要删除的标签id
-      deleteTagId: ''
+      deleteTagId: '',
+      // 页面信息
+      pageInfo: {
+        key: '',
+        pageNum: 1,
+        pageSize: 10
+      },
+      total: 0
     }
   },
   created () {
     this.getTagList()
   },
   methods: {
+    // 监听pageSize改变的事件
+    handleSizeChange (newSize) {
+      this.pageInfo.pageSize = newSize
+      this.getTagList()
+    },
+    // 监听页码值改变的事件
+    handleCurrentChange (newPage) {
+      this.pageInfo.pageNum = newPage
+      this.getTagList()
+    },
     // 获取标签列表
     async getTagList () {
-      const { data: result } = await this.$http.get('/admin/tag/list')
+      const { data: result } = await this.$http.get('/admin/tag', { params: this.pageInfo })
       if (result.status !== 200) {
         this.$message.error(result.message)
       }
-      this.tagList = result.data
+      this.tagList = result.data.list
+      this.pageInfo.pageNum = result.data.pageNum
+      this.pageInfo.pageSize = result.data.pageSize
+      this.total = result.data.total
     }, // 获取目录列表
     async getCategoryList () {
-      const { data: result } = await this.$http.get('/admin/category/list')
+      const { data: result } = await this.$http.get('/admin/menu/category')
       if (result.status !== 200) {
         this.$message.error(result.message)
       }
@@ -159,8 +189,7 @@ export default {
     async addTag (refName) {
       this.$refs.addFormRef.validate(async valid => {
         if (valid) {
-          console.log(this.addForm)
-          const { data: result } = await this.$http.post('/admin/tag/add', this.addForm)
+          const { data: result } = await this.$http.post('/admin/tag', this.addForm)
           if (result.status !== 200) {
             return this.$message.error(result.message)
           }
@@ -198,7 +227,7 @@ export default {
     async updateTag () {
       this.$refs.updateFormRef.validate(async valid => {
         if (valid) {
-          const { data: result } = await this.$http.put('/admin/tag/update', this.updateForm)
+          const { data: result } = await this.$http.put('/admin/tag', this.updateForm)
           if (result.status !== 200) {
             return this.$message.error(result.message)
           }
@@ -222,7 +251,7 @@ export default {
     },
     // 删除标签
     async deleteTag (id) {
-      const { data: result } = await this.$http.delete('/admin/tag/delete/' + id)
+      const { data: result } = await this.$http.delete('/admin/tag/' + id)
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -242,6 +271,7 @@ export default {
 }
 .el-table {
   margin-top: 15px;
+  margin-bottom: 15px;
   font-size: 14px;
 }
 </style>

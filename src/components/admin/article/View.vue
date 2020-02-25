@@ -22,7 +22,6 @@
 export default {
   data () {
     return {
-      params: '',
       article: ''
     }
   },
@@ -31,13 +30,11 @@ export default {
   },
   methods: {
     async getArticle () {
-      this.params = this.$route.params
-      const { data: result } = await this.$http.get('/admin/article/view/' + this.params.id)
+      const { data: result } = await this.$http.get('/article/' + this.$route.params.id)
       if (result.status !== 200) {
         return this.$message.error('读取文章内容失败！')
       }
       this.article = result.data
-      console.log(result.data)
     }
   }
 }

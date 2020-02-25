@@ -17,12 +17,12 @@
       </span>
     </el-dialog>
     <!-- 卡片视图区域 -->
-    <el-card>
+    <el-card shadow="never">
       <!-- 搜索区 -->
       <el-row :gutter="20">
         <el-col :span="10">
           <el-input placeholder="请输入内容" v-model="queryInfo.key">
-            <el-button slot="append" icon="el-icon-search" @click="searchArticle()"></el-button>
+            <el-button slot="append" icon="el-icon-search" @click="getArticleList()"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -76,11 +76,12 @@ export default {
       // 获取文章列表的参数对象
       queryInfo: {
         key: '',
-        pageNum: '',
-        pageSize: ''
+        pageNum: 1,
+        pageSize: 10,
+        reverse: false
       },
       // 文章总数
-      total: '',
+      total: 0,
       // 控制确认删除弹出框的显示与隐藏
       isDeleteDialogVisible: false,
       // 要删除的文章id
@@ -107,18 +108,7 @@ export default {
     },
     // 获取文章列表
     async getArticleList () {
-      const { data: result } = await this.$http.post('/article/list', this.queryInfo)
-      if (result.status !== 200) {
-        return this.$message.error(result.message)
-      }
-      this.articleList = result.data.list
-      this.queryInfo.pageNum = result.data.pageNum
-      this.queryInfo.pageSize = result.data.pageSize
-      this.total = result.data.total
-    },
-    // 搜索文章
-    async searchArticle () {
-      const { data: result } = await this.$http.post('/search/article', this.queryInfo)
+      const { data: result } = await this.$http.get('/article', { params: this.queryInfo })
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -139,16 +129,6 @@ export default {
     async modify (id) {
       this.$router.push('/admin/article/modify/' + id)
     },
-    // 删除文章
-    async delete (id) {
-      this.isPopover = false
-      const { data: result } = await this.$http.delete('/admin/article/delete/' + id)
-      if (result !== 200) {
-        return this.$message.error(result.message)
-      }
-      this.$message.success(result.message)
-      this.getArticleList()
-    },
     // 下载文章
     async download (id) {
       // axios 响应拦截器
@@ -160,7 +140,7 @@ export default {
         return error
       })
       // 发送请求
-      const result = await this.$http.get('/admin/article/download/' + id)
+      const result = await this.$http.get(`/admin/article/${id}/download`)
       // 消息提示
       if (result.status !== 200) {
         return this.$message.error(result.message)
@@ -170,11 +150,11 @@ export default {
        * 创建一个指向类型数组的URL，将该url作为a标签的链接目标，然后去触发a标签的点击事件从而文件下载
        */
       var blob = new Blob([result.data], { type: 'application/octet-stream' })
-      // var contentDisposition = result.headers['content-disposition']
-      // var patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
-      // var res = patt.exec(contentDisposition)
+      var contentDisposition = result.headers['content-disposition']
+      var patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
+      var res = patt.exec(contentDisposition)
       // 设置下载的文件名
-      var filename = id + '.md'
+      var filename = res[1]
       var downloadElement = document.createElement('a')
       // 创建下载的链接
       var href = window.URL.createObjectURL(blob)
@@ -190,7 +170,7 @@ export default {
       document.body.removeChild(downloadElement)
       // 释放掉blob对象
       window.URL.revokeObjectURL(href)
-      this.$message.success('文章下载成功!')
+      this.$message.success(result.message)
     },
     // 打开删除标签对话框
     openDeleteDialog (id) {
@@ -199,7 +179,7 @@ export default {
     },
     // 删除标签
     async deleteArticle (id) {
-      const { data: result } = await this.$http.delete('/admin/article/delete/' + id)
+      const { data: result } = await this.$http.delete('/admin/article/' + id)
       if (result.status !== 200) {
         return this.$message.error(result.message)
       }
@@ -216,9 +196,6 @@ export default {
 .el-breadcrumb {
   margin-bottom: 15px;
   font-size: 15px;
-}
-.el-card {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
 }
 .el-table {
   margin-top: 15px;
