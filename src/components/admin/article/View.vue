@@ -3,7 +3,7 @@
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/admin/dashboard' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/admin/article/list' }">文章列表</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/admin/article' }">文章列表</el-breadcrumb-item>
       <el-breadcrumb-item>文章查看</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片视图区 -->

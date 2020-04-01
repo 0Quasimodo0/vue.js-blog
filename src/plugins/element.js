@@ -26,6 +26,7 @@ import { BreadcrumbItem } from 'element-ui'
 import { Table } from 'element-ui'
 import { TableColumn } from 'element-ui'
 import { Pagination } from 'element-ui'
+// 上传组件
 import { Upload } from 'element-ui'
 import { Avatar } from 'element-ui'
 import { Tag } from 'element-ui'
@@ -51,6 +52,12 @@ import { Loading } from 'element-ui'
 import { Link } from 'element-ui'
 import { Switch } from 'element-ui'
 import { InfiniteScroll } from 'element-ui'
+import { Backtop } from 'element-ui'
+import { Tooltip } from 'element-ui'
+import { Badge } from 'element-ui'
+import { Cascader } from 'element-ui'
+import { DatePicker } from 'element-ui'
+import { Progress } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Container)
@@ -101,6 +108,12 @@ Vue.use(Loading)
 Vue.use(Link)
 Vue.use(Switch)
 Vue.use(InfiniteScroll)
+Vue.use(Backtop)
+Vue.use(Tooltip)
+Vue.use(Badge)
+Vue.use(Cascader)
+Vue.use(DatePicker)
+Vue.use(Progress)
 
 // 挂载弹框提示组件
 Vue.prototype.$message = Message

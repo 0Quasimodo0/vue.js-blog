@@ -4,9 +4,11 @@ import router from './router'
 import './assets/css/global.css'
 import './assets/css/icon.css'
 import './plugins/element.js'
+import './plugins/clipboard.js'
 import './plugins/MavonEditor.js'
 import axios from 'axios'
 import './assets/css/github-markdown.css'
+import './assets/css/code.css'
 import { Loading } from 'element-ui'
 
 let loading
@@ -18,6 +20,7 @@ axios.interceptors.request.use(config => {
     lock: true,
     text: 'loading...'
   })
+  // 请求携带token令牌
   config.headers.authorization = window.sessionStorage.getItem('token')
   return config
 })
