@@ -19,7 +19,6 @@ import { Row } from 'element-ui'
 import { Submenu } from 'element-ui'
 import { Carousel } from 'element-ui'
 import { CarouselItem } from 'element-ui'
-import { Calendar } from 'element-ui'
 import { Aside } from 'element-ui'
 import { Breadcrumb } from 'element-ui'
 import { BreadcrumbItem } from 'element-ui'
@@ -28,36 +27,34 @@ import { TableColumn } from 'element-ui'
 import { Pagination } from 'element-ui'
 // 上传组件
 import { Upload } from 'element-ui'
+// 头像
 import { Avatar } from 'element-ui'
+// 标签
 import { Tag } from 'element-ui'
+// 图片
 import { Image } from 'element-ui'
-import { Checkbox } from 'element-ui'
-import { CheckboxGroup } from 'element-ui'
-import { Radio } from 'element-ui'
-import { RadioGroup } from 'element-ui'
 import { Select } from 'element-ui'
 import { Option } from 'element-ui'
 import { Dialog } from 'element-ui'
-import { Popconfirm } from 'element-ui'
-import { Popover } from 'element-ui'
-import { Collapse } from 'element-ui'
-import { CollapseItem } from 'element-ui'
 import { Divider } from 'element-ui'
-import { PageHeader } from 'element-ui'
 import { Tabs } from 'element-ui'
 import { TabPane } from 'element-ui'
 import { Steps } from 'element-ui'
 import { Step } from 'element-ui'
 import { Loading } from 'element-ui'
+// 文字链接
 import { Link } from 'element-ui'
+// 开关
 import { Switch } from 'element-ui'
 import { InfiniteScroll } from 'element-ui'
-import { Backtop } from 'element-ui'
-import { Tooltip } from 'element-ui'
-import { Badge } from 'element-ui'
 import { Cascader } from 'element-ui'
 import { DatePicker } from 'element-ui'
-import { Progress } from 'element-ui'
+// 折叠面板
+import { Collapse } from 'element-ui'
+import { CollapseItem } from 'element-ui'
+// 时间线
+import { Timeline } from 'element-ui'
+import { TimelineItem } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Container)
@@ -76,7 +73,6 @@ Vue.use(Submenu)
 Vue.use(Carousel)
 Vue.use(CarouselItem)
 Vue.use(Row)
-Vue.use(Calendar)
 Vue.use(Aside)
 Vue.use(Breadcrumb)
 Vue.use(BreadcrumbItem)
@@ -87,19 +83,12 @@ Vue.use(Upload)
 Vue.use(Avatar)
 Vue.use(Tag)
 Vue.use(Image)
-Vue.use(Checkbox)
-Vue.use(Radio)
-Vue.use(RadioGroup)
 Vue.use(Select)
 Vue.use(Option)
-Vue.use(CheckboxGroup)
 Vue.use(Dialog)
-Vue.use(Popconfirm)
-Vue.use(Popover)
 Vue.use(Collapse)
 Vue.use(CollapseItem)
 Vue.use(Divider)
-Vue.use(PageHeader)
 Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Steps)
@@ -108,12 +97,10 @@ Vue.use(Loading)
 Vue.use(Link)
 Vue.use(Switch)
 Vue.use(InfiniteScroll)
-Vue.use(Backtop)
-Vue.use(Tooltip)
-Vue.use(Badge)
 Vue.use(Cascader)
 Vue.use(DatePicker)
-Vue.use(Progress)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 
 // 挂载弹框提示组件
 Vue.prototype.$message = Message
